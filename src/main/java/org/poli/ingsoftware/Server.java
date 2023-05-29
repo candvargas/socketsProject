@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Server {
     public static final int PUERTO = 5000;
@@ -22,15 +23,16 @@ public class Server {
         System.out.println("Servidor iniciado y contestando OK");
         boolean closeConnection= false;
         try {
+            Socket cliente = this.serverSocket.accept();
+            //System.out.println("cliente conectado");
+            User user = writteMessageWelcome(cliente);
+
             while(!this.serverSocket.isClosed()){
-                Socket cliente = this.serverSocket.accept();
-                //System.out.println("cliente conectado");
-                writteMessageWelcome(cliente);
 
-//                out = new DataOutputStream( cliente.getOutputStream() );
-//                out.writeUTF( "Hola cliente care care" );
+                sendingMessage(user);
 
-                closeConnection = in.readUTF().equals("chao");
+                String receiveMessage = receivingMessage(in, user);
+                closeConnection = receiveMessage.equals("chao");
                 if (closeConnection){
                     cliente.close();
                     System.out.println("El usuario abandono");
@@ -41,12 +43,35 @@ public class Server {
         }
     }
 
-    public void writteMessageWelcome(Socket cliente){
+    public void sendingMessage(User user){
+        try {
+            Scanner sc = new Scanner(System.in);
+            String message = sc.nextLine();
+            out = new DataOutputStream(user.getSocket().getOutputStream() );
+            out.writeUTF( "Server--> " + message);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String receivingMessage(DataInputStream in, User user){
+        String receiveMessage = null;
+        try {
+            receiveMessage = in.readUTF();
+            System.out.println(user.getName()+ "--> " + receiveMessage);
+            return receiveMessage;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public User writteMessageWelcome(Socket cliente){
         try {
             in = new DataInputStream(cliente.getInputStream());
-            String nameUser = in.readUTF();
 
-            System.out.println("Usuario \""+nameUser+"\" conectado");
+            User user = new User(in.readUTF(), cliente);
+            System.out.println("Usuario \""+user.getName()+"\" conectado");
+            return user;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
