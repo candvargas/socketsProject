@@ -2,6 +2,10 @@ package org.poli.ingsoftware;
 
 import java.net.Socket;
 
+/**
+ * This class works to abstract users
+ * @author subgrupo_13
+ */
 public class User {
     private String name;
     private Socket socket;

@@ -6,15 +6,25 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class ClientOne {
+/**
+ * This class works like a client
+ * @author subgrupo_13
+ */
+public class Client {
     private final String HOST = "127.0.0.1";
     private final int PORT = 5000;
     private DataInputStream in = null;
     private DataOutputStream out = null;
 
+    /**
+     * Method sending messages to server
+     * @param user
+     * @return
+     */
     public String sendingMessage(User user){
         try {
             Scanner sc = new Scanner(System.in);
+            System.out.printf(user.getName()+"--> ");
             String message = sc.nextLine();
             out = new DataOutputStream(user.getSocket().getOutputStream() );
             out.writeUTF( message);
@@ -24,6 +34,10 @@ public class ClientOne {
         }
     }
 
+    /**
+     * Method receiving message from server
+     * @param in
+     */
     public void receivingMessage(DataInputStream in){
         String receiveMessage = null;
         try {
@@ -34,6 +48,9 @@ public class ClientOne {
         System.out.println(receiveMessage);
     }
 
+    /**
+     * Method start socket and it is the key method
+     */
     public void startSession(){
         try {
             Socket socket = new Socket(HOST, PORT);
@@ -63,6 +80,10 @@ public class ClientOne {
         }
     }
 
+    /**
+     * This method close socket
+     * @param socket
+     */
     public void endingSession(Socket socket){
         try {
             socket.close();
@@ -71,9 +92,13 @@ public class ClientOne {
         }
     }
 
+    /**
+     * Begin client
+     * @param args
+     */
     public static void main(String[] args){
-        ClientOne clientOne = new ClientOne();
-        clientOne.startSession();
+        Client client = new Client();
+        client.startSession();
 
     }
 }

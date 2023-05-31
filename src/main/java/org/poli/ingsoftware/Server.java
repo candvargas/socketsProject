@@ -8,6 +8,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+/**
+ * This class works like a server
+ * @author subgrupo_13
+ */
 public class Server {
     public static final int PUERTO = 5000;
     public DataOutputStream out;
@@ -19,13 +23,15 @@ public class Server {
         this.serverSocket = serverSocket;
     }
 
+    /**
+     * Method to start server, it is the key method
+     */
     public void startServer(){
         System.out.println("Servidor iniciado y contestando OK");
         boolean closeConnection= false;
         try {
             Socket cliente = this.serverSocket.accept();
-            //System.out.println("cliente conectado");
-            User user = writteMessageWelcome(cliente);
+            User user = writeMessageWelcome(cliente);
 
             while(!this.serverSocket.isClosed()){
 
@@ -43,9 +49,14 @@ public class Server {
         }
     }
 
+    /**
+     * Method works to send messages
+     * @param user
+     */
     public void sendingMessage(User user){
         try {
             Scanner sc = new Scanner(System.in);
+            System.out.printf("Server--> ");
             String message = sc.nextLine();
             out = new DataOutputStream(user.getSocket().getOutputStream() );
             out.writeUTF( "Server--> " + message);
@@ -54,6 +65,12 @@ public class Server {
         }
     }
 
+    /**
+     * Method works to receive messages
+     * @param in
+     * @param user
+     * @return
+     */
     public String receivingMessage(DataInputStream in, User user){
         String receiveMessage = null;
         try {
@@ -65,7 +82,12 @@ public class Server {
         }
     }
 
-    public User writteMessageWelcome(Socket cliente){
+    /**
+     * Method write welcome message
+     * @param cliente
+     * @return
+     */
+    public User writeMessageWelcome(Socket cliente){
         try {
             in = new DataInputStream(cliente.getInputStream());
 
@@ -77,6 +99,10 @@ public class Server {
         }
     }
 
+    /**
+     * Begin server
+     * @param args
+     */
     public static void main(String[] args) {
         try {
             Server server = new Server(new ServerSocket(PUERTO));
