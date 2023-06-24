@@ -40,7 +40,7 @@ public class Server {
                 String receiveMessage = receivingMessage(in, user);
                 closeConnection = receiveMessage.equals("chao");
                 if (closeConnection){
-                    cliente.close();
+                    this.serverSocket.close();
                     System.out.println("El usuario abandono");
                 }
             }
